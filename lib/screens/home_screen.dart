@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,8 +16,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<String> comments = new List<String>();
+  List<String> images = new List<String>();
+
   int _index = 0;
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,11 +43,10 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _index,
         onTap: (index) {
           setState(() {
-            _index=index;
-
+            _index = index;
           });
         },
-        items:const <BottomNavigationBarItem> [
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: "Home Page",
@@ -58,27 +69,49 @@ class _HomePageState extends State<HomePage> {
   }
 
   homeBody() {
-    if(_index==0){
+    if (_index == 0) {
       return homePage();
-      }
-    if(_index==2){
+    }
+
+    if (_index == 2) {
       return PostAdd();
     }
-    if(_index==3){
+    if (_index == 3) {
       return ProfilePage();
     }
-
-
   }
 
   homePage() {
-return RaisedButton(
-  child: Text("sign out"),
-  onPressed: () async{
-    await _firebaseAuth.signOut();
-    Navigator.of(context).pushReplacementNamed('login');
+    return FutureBuilder(
+        future: getData(),
+        builder: (context, AsyncSnapshot snapshot) {
+          return ListView.builder(
+              itemCount: images.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: ListTile(),
+                );
+              });
+        });
   }
-  ,
-);
+
+  getData() async {
+    var uid = _firebaseAuth.currentUser.uid;
+    List<String> listComment = new List<String>();
+    List<String> listImage = new List<String>();
+    for (int i = 0; i < 2; i++) {
+      DocumentSnapshot documentSnapshot =
+          await _firebaseFirestore.doc("/users/$uid/posts/Posts $i").get();
+      if (documentSnapshot.exists) {
+        String comment = documentSnapshot.data()['comment'];
+        listComment.add(comment);
+        comments = listComment;
+        String image = documentSnapshot.data()['image'];
+        listImage.add(image);
+        images = listImage;
+      } else {
+        debugPrint("error");
+      }
+    }
   }
 }

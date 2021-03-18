@@ -22,10 +22,12 @@ class StatePostAdd extends State<PostAdd> {
   PickedFile _pickedFile;
   var Uid;
   var Url;
+  var ScaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key:ScaffoldKey,
       resizeToAvoidBottomInset: true,
       body: Column(
         children: [
@@ -121,5 +123,7 @@ class StatePostAdd extends State<PostAdd> {
     String comm = comment.text;
     await documentReference.set({'comment': comm, 'image': Url});
     s++;
+    Navigator.pushReplacementNamed(context, 'home');
+
   }
 }
