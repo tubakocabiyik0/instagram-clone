@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/screens/FirebaseIn%C4%B1t.dart';
+import 'package:insta_clone/screens/home_screen.dart';
 import 'package:insta_clone/screens/login_screen.dart';
 
 void main() {
@@ -11,9 +13,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: 'login',
+      initialRoute: 'FırebaseInit',
       routes: {
+        'FırebaseInit':(context) =>App(),
         'login': (context) => LoginScreen(),
+        'home':(context)=>HomePage(),
       },
     );
   }
