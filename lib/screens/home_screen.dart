@@ -18,16 +18,18 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<String> comments = new List<String>();
   List<String> images = new List<String>();
-
+  String mail;
   int _index = 0;
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-
+  Future _future;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-  }
+    mail = _firebaseAuth.currentUser.email.toString();
+    _future=getData();
+   }
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +85,35 @@ class _HomePageState extends State<HomePage> {
 
   homePage() {
     return FutureBuilder(
-        future: getData(),
+        future: _future,
         builder: (context, AsyncSnapshot snapshot) {
           return ListView.builder(
               itemCount: images.length,
               itemBuilder: (context, index) {
                 return Card(
-                  child: ListTile(),
+                  child: Column(
+                    children: [
+                      Image.network(images[index]),
+                      Row(children: [
+                        IconButton(icon:Icon(Icons.favorite_border_sharp,size: 27),onPressed: (){
+
+                        },),
+                        IconButton(icon:Icon(Icons.comment_outlined,size: 27),onPressed: (){
+
+                        },),
+                        IconButton(icon:Icon(Icons.share,size: 27),onPressed: (){
+
+                        },),
+                      ],),
+                      ListTile(
+                        title: Text(mail),
+                        subtitle: Text(
+                          comments[index],
+                          style: TextStyle(fontSize: 18, color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               });
         });
